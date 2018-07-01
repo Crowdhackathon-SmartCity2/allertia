@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Allertia</string>
+    <string name="app_name">ALLERTia</string>
     <string name="settings_phone_label">Phone Number to call</string>
     <string name="settings_phone_key" translatable="false">query</string>
     <string name="settings_phone_default" translatable="false">""</string>

@@ -46,43 +46,6 @@ public class VoiceRecognition extends AppCompatActivity implements RecognitionLi
     private SpeechRecognizer speech;
     private Intent recognizerIntent;
 
-    public static String getErrorText(int errorCode) {
-        String message;
-        switch (errorCode) {
-            case SpeechRecognizer.ERROR_AUDIO:
-                message = "Audio recording error";
-                break;
-            case SpeechRecognizer.ERROR_CLIENT:
-                message = "Client side error";
-                break;
-            case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:
-                message = "Insufficient permissions";
-                break;
-            case SpeechRecognizer.ERROR_NETWORK:
-                message = "Network error";
-                break;
-            case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
-                message = "Network timeout";
-                break;
-            case SpeechRecognizer.ERROR_NO_MATCH:
-                message = "No match";
-                break;
-            case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
-                message = "RecognitionService busy";
-                break;
-            case SpeechRecognizer.ERROR_SERVER:
-                message = "error from server";
-                break;
-            case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
-                message = "No speech input";
-                break;
-            default:
-                message = "Didn't understand, please try again.";
-                break;
-        }
-        return message;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,6 +98,7 @@ public class VoiceRecognition extends AppCompatActivity implements RecognitionLi
     }
 
     // Set listener to recognize voice and request permission if not granted
+
     private void startSpeechRecognizer() {
         // Recognize voice creation and extras
         recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -159,8 +123,8 @@ public class VoiceRecognition extends AppCompatActivity implements RecognitionLi
             }
         }
     }
-
     // TTS speak
+
     private void speak(String text) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
@@ -168,8 +132,8 @@ public class VoiceRecognition extends AppCompatActivity implements RecognitionLi
             tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
         }
     }
-
     // Helper function to call and send SMS in casse of emergency
+
     // Request permissions if not granted
     private void callPhone() {
         if (Build.VERSION.SDK_INT < 23) {
@@ -189,42 +153,47 @@ public class VoiceRecognition extends AppCompatActivity implements RecognitionLi
             }
         }
     }
-
     // Send SMS with location embedded and call phone
-    // Number to send and call is retrieved through the SharedPreferences settings_phone_key in which the user
-    // has set.
-    private void callForHelp() {
 
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-        // getString retrieves a String value from the preferences.
-        // The second parameter is the default value for this preference.
-        String phoneNumber = sharedPrefs.getString(getString(R.string.settings_phone_key),
-                getString(R.string.settings_phone_default));
-
-
-        if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) {
-            Log.e(LOG_TAG, "Sending SMS");
-            String message;
-            message = getLocationMessage();
-            sendSMS(phoneNumber, message);
-        } else {
-            Toast.makeText(this, "You don't assign permission to send SMS.", Toast.LENGTH_SHORT).show();
+    public static String getErrorText(int errorCode) {
+        String message;
+        switch (errorCode) {
+            case SpeechRecognizer.ERROR_AUDIO:
+                message = "Audio recording error";
+                break;
+            case SpeechRecognizer.ERROR_CLIENT:
+                message = "Client side error";
+                break;
+            case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:
+                message = "Insufficient permissions";
+                break;
+            case SpeechRecognizer.ERROR_NETWORK:
+                message = "Network error";
+                break;
+            case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
+                message = "Network timeout";
+                break;
+            case SpeechRecognizer.ERROR_NO_MATCH:
+                message = "No match";
+                break;
+            case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
+                message = "RecognitionService busy";
+                break;
+            case SpeechRecognizer.ERROR_SERVER:
+                message = "error from server";
+                break;
+            case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
+                message = "No speech input";
+                break;
+            default:
+                message = "Didn't understand, please try again.";
+                break;
         }
-
-        if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
-            Log.e(LOG_TAG,"Calling Phone");
-            Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setData(Uri.parse("tel:" + phoneNumber));
-            this.startActivity(callIntent);
-        } else {
-            Toast.makeText(this, "You don't assign permission to call.", Toast.LENGTH_SHORT).show();
-        }
+        return message;
     }
-
+    // has set.
     //---sends an SMS message to another device---
+
     private void sendSMS(String phoneNumber, String message) {
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, null, null);
@@ -341,11 +310,36 @@ public class VoiceRecognition extends AppCompatActivity implements RecognitionLi
 
     }
 
-    @Override
-    public void onError(int errorCode) {
-        String errorMessage = getErrorText(errorCode);
-        Log.d(LOG_TAG, "FAILED " + errorMessage);
-        mTextView.setText(errorMessage);
+    // Number to send and call is retrieved through the SharedPreferences settings_phone_key in which the user
+    private void callForHelp() {
+
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // getString retrieves a String value from the preferences.
+        // The second parameter is the default value for this preference.
+        String phoneNumber = sharedPrefs.getString(getString(R.string.settings_phone_key),
+                getString(R.string.settings_phone_default));
+
+
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) {
+            Log.e(LOG_TAG, "Sending SMS");
+            String message;
+            message = getLocationMessage();
+            sendSMS(phoneNumber, message);
+        } else {
+            Toast.makeText(this, "You don't assign permission to send SMS.", Toast.LENGTH_SHORT).show();
+        }
+
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+            Log.e(LOG_TAG, "Calling Phone");
+            Intent callIntent = new Intent(Intent.ACTION_CALL);
+            callIntent.setData(Uri.parse("tel:" + phoneNumber));
+            this.startActivity(callIntent);
+        } else {
+            Toast.makeText(this, "You don't assign permission to call.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -375,5 +369,18 @@ public class VoiceRecognition extends AppCompatActivity implements RecognitionLi
     @Override
     public void onEvent(int eventType, Bundle params) {
 
+    }
+
+    @Override
+    public void onError(int errorCode) {
+        String errorMessage = getErrorText(errorCode);
+        Log.d(LOG_TAG, "FAILED " + errorMessage);
+        if (errorCode == SpeechRecognizer.ERROR_NO_MATCH ||
+                errorCode == SpeechRecognizer.ERROR_SPEECH_TIMEOUT) {
+            mTextView.setBackgroundColor(Color.RED);
+            callPhone();
+        } else {
+            mTextView.setText(errorMessage);
+        }
     }
 }
