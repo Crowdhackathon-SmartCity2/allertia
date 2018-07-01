@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Allertia</string>
+    <string name="settings_phone_label">Phone Number to call</string>
+    <string name="settings_phone_key" translatable="false">query</string>
+    <string name="settings_phone_default" translatable="false">""</string>
+    <string name="settings_title">Settings</string>
+    <string name="settings_menu_item">Settings</string>
+    <string name="select_bluetooth">Select Bluetooth Device</string>
+    <string name="sensitivity_key">sensitivity</string>
+</resources>
