@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -212,7 +213,7 @@ public class VoiceRecognition extends AppCompatActivity implements RecognitionLi
             Toast.makeText(this, "You don't assign permission to send SMS.", Toast.LENGTH_SHORT).show();
         }
 
-        /*if (ActivityCompat.checkSelfPermission(this,
+        if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
             Log.e(LOG_TAG,"Calling Phone");
             Intent callIntent = new Intent(Intent.ACTION_CALL);
@@ -220,7 +221,7 @@ public class VoiceRecognition extends AppCompatActivity implements RecognitionLi
             this.startActivity(callIntent);
         } else {
             Toast.makeText(this, "You don't assign permission to call.", Toast.LENGTH_SHORT).show();
-        }*/
+        }
     }
 
     //---sends an SMS message to another device---
@@ -230,7 +231,7 @@ public class VoiceRecognition extends AppCompatActivity implements RecognitionLi
     }
 
     private String getLocationMessage() {
-        String sms = "I HAVE FALLEN HERE: ";
+        String sms = "I HAVE FALLEN HERE AND I NEED HELP: ";
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -359,7 +360,6 @@ public class VoiceRecognition extends AppCompatActivity implements RecognitionLi
         if (text.toUpperCase().contains("YES")) {
             mTextView.setBackgroundColor(Color.GREEN);
         } else {
-            //TODO What happens if not feeling well
             mTextView.setBackgroundColor(Color.RED);
             callPhone();
         }
